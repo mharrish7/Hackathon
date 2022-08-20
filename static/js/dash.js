@@ -173,27 +173,30 @@ var ttoogle = 1
 
 $(document).keypress(function(e){
 
-    if(teri){
-        if(e.key == 'a' && ttoogle){
+    if(teri && e.key == 'a'){
+        if(ttoogle){
             document.querySelector('.post1').style.width = '1%';
             ttoogle = 0;
             document.querySelector('#t1').style.display = 'none';
+            document.querySelector('.t4').style.display = 'none';
+
         }
         else{
             document.querySelector('.post1').style.width = '30%';
             ttoogle = 1;
             document.querySelector('#t1').style.display = 'block';
-    
+            document.querySelector('.t4').style.display = 'block';
+
         }
     }
     
   });
 
-  var totoogle = 1
+  var totoogle = 1;
 
   $(document).keypress(function(e){
-    if(teri){
-        if(e.key == 'd' && totoogle){
+    if(teri && e.key == 'd' ){
+        if( totoogle){
             document.querySelector('.post2').style.width = '1%';
             totoogle = 0;
             document.querySelector('#t2').style.display = 'none';
@@ -210,7 +213,19 @@ $(document).keypress(function(e){
   
         }
     }
-      
+});
+
+    $(document).keypress(function(e){
+        if(teri){
+            if(e.key == 'w'){
+                document.querySelector('.shows').style.display = 'block';
+            }
+            if(e.key == 's'){
+                document.querySelector('.shows').style.display = 'none';
+    
+            }
+        }
+        
     });
 
     var teri = 1
@@ -258,6 +273,9 @@ $(document).keypress(function(e){
 
     })
 
+var fl = "white";
+var sl = 'rgba(4, 4, 4, .7)';
+var bg = "";
 
     $('.ter').terminal({
         hello: function (what) {
@@ -271,8 +289,9 @@ $(document).keypress(function(e){
             if(color == 'default'){
                 color = 'rgba(4, 4, 4, .7)';
             }
-            for( i of document.querySelectorAll('.sd') ){
+            for( i of document.querySelectorAll('.sd9x7') ){
                 i.style.backgroundColor = color;
+                sl = color;
             }
             
         },
@@ -281,13 +300,88 @@ $(document).keypress(function(e){
             console.log(url);
             document.querySelector('body').setAttribute("style", "background-image: url('"+ url + "');");
             console.log(document.querySelector('body').style.backgroundImage);
+            bg = url;
         },
         list: function(){
-            this.echo('style <color> \nback <image url> \nfont <color>');
+            this.echo('style <color> \nback <image url> \nfont <color> \nsave <name> \nshowl \nset <name>');
         },
         font: function(color){
             document.querySelector('body').style.color = color;
+            fl = color;
         },
+        save: function(name){
+            
+            $.ajax({
+                url: '/savelayout',
+                data: {
+                    st : sl,
+                    nt : name,
+                    ft : fl,
+                    bg : bg
+                },
+                type: 'POST'
+            }).done(function (data) {
+                if (data['info'] == 1) {
+                    alert(data['info']);
+                }
+                else{
+                    alert(data['info']);
+                }
+        
+            })
+        },
+        showl: function(){
+            u = this;
+            $.ajax({
+                url: '/getl',
+                data: {
+                    st : 's'
+                },
+                type: 'POST'
+            }).done(function (data) {
+                console.log(data['info']);
+                for(i of data['info']){
+                    u.echo(i);
+                }
+                
+        
+            })
+        },
+        set: function(name){
+            $.ajax({
+                url: '/revl',
+                data: {
+                    nt:name
+                },
+                type: 'POST'
+            }).done(function (data) {
+                if(data['data'] == 0){
+                    console.log('Some error');
+                }
+                else{
+                    i = data['data'];
+                    fl = i[1];
+                    sl = i[0];
+                    bg = i[2];
+                    
+                    console.log(fl,sl,bg);
+                    if(bg != ""){
+                        document.querySelector('body').setAttribute("style", "background-image: url('"+ bg + "');");
+                    }
+                    if(fl != ""){
+                        document.querySelector('body').style.color = fl;
+                    }
+                    
+                    if(sl != ""){
+                        for( i of document.querySelectorAll('.sd9x7') ){
+                            i.style.backgroundColor = sl;
+                        }
+                    }
+                    
+                }
+                
+            })
+        }
     }, {
         greetings: 'Type list to get all the commands'
     });
@@ -320,7 +414,7 @@ $(document).keypress(function(e){
                 $('#todoa').val("");
             }
             else{
-                console.log('error on adding todo');
+                alert(data['info']);
             }
     
         })

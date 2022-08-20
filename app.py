@@ -1,4 +1,5 @@
 
+import re
 from flask import Flask, redirect, render_template, request,jsonify,session,url_for
 import sqlite3
 import hashlib
@@ -10,6 +11,7 @@ con = sqlite3.connect('users.db')
 cursor = con.cursor()
 cursor.execute('create table if not exists Users(username varchar, password varchar, nickname varchar, email varchar)')
 cursor.execute('create table if not exists Todo(realuser varchar,todo varchar)')
+cursor.execute('create table if not exists Layout(name varchar,style varchar,font varchar, bg varchar)')
 con.commit()
 con.close()
 
@@ -19,55 +21,57 @@ app.secret_key = os.environ.get('SECRET_KEY', 'harrish07')
 
 
 def getpdf(u):
-    
-    pdfFileObj = open(f'static/images/{u}.pdf', 'rb')
-    
-    pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-    
-    print(pdfReader.numPages)
-    
-    pageObj = pdfReader.getPage(0)
-    
-    s = pageObj.extractText()
+    try:
+        pdfFileObj = open(f'static/images/{u}.pdf', 'rb')
+        
+        pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+        
+        print(pdfReader.numPages)
+        
+        pageObj = pdfReader.getPage(0)
+        
+        s = pageObj.extractText()
 
-    ind  = s.find('Monday')
+        ind  = s.find('Monday')
 
-    ind2 = s.find('Sl.')
+        ind2 = s.find('Sl.')
 
-    L = s[ind:ind2].split(' ')
+        L = s[ind:ind2].split(' ')
 
-    help1 = ['\nTuesday','\nWednesday','\nThursday','\nFriday']
+        help1 = ['\nTuesday','\nWednesday','\nThursday','\nFriday']
 
-    skip = ['\nBREAK','\nLUNCH','\nBREAK','\n']
+        skip = ['\nBREAK','\nLUNCH','\nBREAK','\n']
 
-    hast = {}
-    initial = 'Monday'
-    hast['Monday'] = []
-    t3 = 1
+        hast = {}
+        initial = 'Monday'
+        hast['Monday'] = []
+        t3 = 1
 
 
-    for i in L[1:]:
-        if i in help1:
-            initial = i[1:]
-            hast[initial] = []
-            t3 = 1
-        else:
-            
-            if i in skip:
+        for i in L[1:]:
+            if i in help1:
+                initial = i[1:]
+                hast[initial] = []
                 t3 = 1
-                continue
-            if t3:
-                t3 = 0
-                continue
             else:
-                hast[initial].append(i)
+                
+                if i in skip:
+                    t3 = 1
+                    continue
+                if t3:
+                    t3 = 0
+                    continue
+                else:
+                    hast[initial].append(i)
 
 
 
 
-    pdfFileObj.close()
+        pdfFileObj.close()
 
-    return hast
+        return hast
+    except:
+        return {}
 
 
 
@@ -345,11 +349,17 @@ def addtodo():
     con = sqlite3.connect('users.db')
     cursor = con.cursor()
     cursor.execute('create table if not exists Todo(realuser varchar,todo varchar)')            
-
-    cursor.execute("insert into Todo values (?, ?)", (d,s))
-    con.commit()
-    con.close()
-    return jsonify({'info' : 1})
+    U = None 
+    cursor.execute('select * from Todo where realuser = ? and todo = ?',(d,s))
+    for i in cursor:
+        U = i
+    if not U:
+        cursor.execute("insert into Todo values (?, ?)", (d,s))
+        con.commit()
+        con.close()
+        return jsonify({'info' : 1})
+    else:
+        return jsonify({'info': 'todo already exists'})
     
 @app.route('/storett',methods = ['POST'])
 def storett():
@@ -363,7 +373,53 @@ def storett():
     except:
         return jsonify({'error':'Unexpected error (check the file, only pdf allowed)'})
 
+@app.route('/savelayout',methods = ['POST'])
+def savel():
+    s = request.form['st']
+    f = request.form['ft']
+    b = request.form['bg']
+    n = request.form['nt']
+    con = sqlite3.connect('users.db')
+    cursor = con.cursor()
+    cursor.execute('create table if not exists Layout(name varchar, style varchar,font varchar, bg varchar)')
+    U = None 
+    cursor.execute('select * from Layout where name = "%s"' %n)
+    for i in cursor:
+        U = i 
+    if not U:
+        cursor.execute('insert into Layout values(?,?,?,?)',(n,s,f,b))
+        con.commit()
+        con.close()
+        return jsonify({'info' : 'Layout saved successfully, others can also access it'})
+    else:
+        return jsonify({'info' : 'A layout already has this name'})
 
+@app.route('/getl',methods = ['POST'])
+def getl():
+    con = sqlite3.connect('users.db')
+    cursor = con.cursor()
+    cursor.execute('create table if not exists Layout(name varchar, style varchar,font varchar, bg varchar)')
+    cursor.execute('select * from Layout')
+    L = []
+    for i in cursor:
+        L.append(i[0])
+    
+    return jsonify({'info':L})
+
+@app.route('/revl',methods = ['POST'])
+def revl():
+    n = request.form['nt']
+    con = sqlite3.connect('users.db')
+    cursor = con.cursor()
+    cursor.execute('select * from Layout where name = "%s"' %n )
+    u = None 
+    for i in cursor:
+        u = i 
+    
+    if u:
+        return jsonify({'data' : [i[1],i[2],i[3]]})
+    else:
+        return jsonify({'data' : 0})
 
 
 if __name__ == "__main__":

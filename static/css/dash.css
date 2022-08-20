@@ -61,6 +61,10 @@ button:hover {
     text-align: center;
 }
 
+.post1 input[type=submit]{
+    width: 40%;
+}
+
 .post2 {
     background: rgba(4, 4, 4, .7);
     width: 30%;
@@ -71,6 +75,7 @@ button:hover {
     border-radius: 10px;
     transition: 0.5s;
     text-align: center;
+    
 }
 
 .shows {
@@ -231,3 +236,17 @@ hr {
 .search:hover {
     box-shadow: 0 8px 16px 10px rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
+
+  .shows{
+    z-index: 10000;
+  }
+
+.shows i{
+   margin-left: 2rem;
+   margin-right: 2rem; 
+   transition: 0.5s;
+}
+
+.shows i:hover{
+    color: white;
+}
