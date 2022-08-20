@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css" />
+    <link rel="stylesheet" href="{{url_for('static',filename = 'css/dash.css')}}">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+    <div class="topbar">
+        <h1 class="head">ToDO</h1>
+        <div class="head2">
+            <p class="user">Welcome {{data[0][1]}}</p>
+            <button class="logout">LOGOUT</button>
+        </div>
+
+
+    </div>
+
+    <div class="post1 sd" style="overflow-y:auto; height:15rem;">
+        <h1 id="t1">Timetable</h1>
+        <!-- <button class="add">ADD</button> -->
+        <!-- {% for i in posts %}
+        <div class="passeg {{i[0]}}-{{i[1]}}">
+            <hr>
+            <h2> {{i[0]}}</h2>
+            <p> Username : {{i[1]}}</p>
+            <button class="showp {{i[0]}}-{{i[1]}}">Show pass</button>
+            <button class="delp {{i[0]}}-{{i[1]}}">Delete</button>
+        </div>
+        {% endfor %} -->
+    </div>
+    <div class="search sd">
+        <form action="" class="searchi" method="post">
+
+            <label for="search">Search</label>
+            <input type="text" name="search" id="search">
+            <input type="submit" value="SUBMIT">
+
+        </form>
+    </div>
+    <div class="post2 sd" style="overflow-y:auto; height:15rem;">
+        <h1 id="t2">Todos</h1>
+        <!-- <button class="add">ADD</button> -->
+        <!-- {% for i in posts %}
+        <div class="passeg {{i[0]}}-{{i[1]}}">
+            <hr>
+            <h2> {{i[0]}}</h2>
+            <p> Username : {{i[1]}}</p>
+            <button class="showp {{i[0]}}-{{i[1]}}">Show pass</button>
+            <button class="delp {{i[0]}}-{{i[1]}}">Delete</button>
+        </div>
+        {% endfor %} -->
+    </div>
+
+
+
+    <div class="ter" style="overflow-y:auto; height:10rem;">
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
+    <script src="{{url_for('static',filename = 'js/dash.js')}}"></script>
+</body>
+
+</html>
