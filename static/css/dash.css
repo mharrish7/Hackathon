@@ -217,4 +217,17 @@ hr {
     transform: translate(-50%, 0%);
     padding: 2rem;
     border-radius: 1rem;
+    transition: 0.5s;
 }
+
+.post2 input[type=submit]{
+    width: 20%;
+}
+
+.post2 input[type=text]{
+    width: 40%;
+}
+
+.search:hover {
+    box-shadow: 0 8px 16px 10px rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
