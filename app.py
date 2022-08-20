@@ -1,9 +1,10 @@
 
-import json
 from flask import Flask, redirect, render_template, request,jsonify,session,url_for
 import sqlite3
 import hashlib
 import os
+import PyPDF2
+import time
 
 con = sqlite3.connect('users.db')
 cursor = con.cursor()
@@ -15,6 +16,58 @@ con.close()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'harrish07')
+
+
+def getpdf(u):
+    
+    pdfFileObj = open(f'static/images/{u}.pdf', 'rb')
+    
+    pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+    
+    print(pdfReader.numPages)
+    
+    pageObj = pdfReader.getPage(0)
+    
+    s = pageObj.extractText()
+
+    ind  = s.find('Monday')
+
+    ind2 = s.find('Sl.')
+
+    L = s[ind:ind2].split(' ')
+
+    help1 = ['\nTuesday','\nWednesday','\nThursday','\nFriday']
+
+    skip = ['\nBREAK','\nLUNCH','\nBREAK','\n']
+
+    hast = {}
+    initial = 'Monday'
+    hast['Monday'] = []
+    t3 = 1
+
+
+    for i in L[1:]:
+        if i in help1:
+            initial = i[1:]
+            hast[initial] = []
+            t3 = 1
+        else:
+            
+            if i in skip:
+                t3 = 1
+                continue
+            if t3:
+                t3 = 0
+                continue
+            else:
+                hast[initial].append(i)
+
+
+
+
+    pdfFileObj.close()
+
+    return hast
 
 
 
@@ -154,8 +207,22 @@ def dash():
                 t1 = i[1].split('_')
                 t1 = " ".join(t1)
                 cred.append(list(i[1:]) + [t1])
+            
+            
+            WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+            Time = ['8:30', '9:20', '10:30','11:20','1:30','2:30','3:20','4:10']
 
-            return render_template('dashboard.html',data = L, posts = cred)
+            now = time.localtime()
+            weekday_index = now.tm_wday
+            w1 = WEEKDAYS[weekday_index]
+            w1 = "Tuesday"
+            hast = getpdf(d)
+            d1 = hast.get(w1,[])
+            tt = []
+            for i in range(len(d1)):
+                if d1[i] != '':
+                    tt.append([d1[i],Time[i]])
+            return render_template('dashboard.html',data = L, posts = cred,tt = tt)
         else:
             return redirect('/')
     else:
@@ -284,6 +351,20 @@ def addtodo():
     con.close()
     return jsonify({'info' : 1})
     
+@app.route('/storett',methods = ['POST'])
+def storett():
+    try:
+        if 'file' not in request.files:
+            return jsonify({'data' : 'nofile'})
+        file = request.files['file']
+        u = session['cuser']
+        file.save(f"static/images/{u}.pdf")
+        return jsonify({'data':1})
+    except:
+        return jsonify({'error':'Unexpected error (check the file, only pdf allowed)'})
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

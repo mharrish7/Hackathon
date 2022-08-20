@@ -268,6 +268,9 @@ $(document).keypress(function(e){
             this.echo('Hi ' + name);
         },
         style: function(color){
+            if(color == 'default'){
+                color = 'rgba(4, 4, 4, .7)';
+            }
             for( i of document.querySelectorAll('.sd') ){
                 i.style.backgroundColor = color;
             }
@@ -278,10 +281,15 @@ $(document).keypress(function(e){
             console.log(url);
             document.querySelector('body').setAttribute("style", "background-image: url('"+ url + "');");
             console.log(document.querySelector('body').style.backgroundImage);
-        }
-        
+        },
+        list: function(){
+            this.echo('style <color> \nback <image url> \nfont <color>');
+        },
+        font: function(color){
+            document.querySelector('body').style.color = color;
+        },
     }, {
-        greetings: 'My First Web Terminal'
+        greetings: 'Type list to get all the commands'
     });
 
     $('.searchi').on('submit',function(e){
@@ -317,4 +325,26 @@ $(document).keypress(function(e){
     
         })
         ev.preventDefault();
+    });
+
+    $("#form").on("submit",function(e){
+        formdata = new FormData($("#form")[0]);
+        console.log(formdata);
+        $.ajax({
+            data :formdata,
+            type : 'POST',
+            url : '/storett',
+            contentType: false,
+            cache: false,
+            processData: false
+        })
+        .done(function(data) {
+          if(data.error){
+            $('#res1').text(data['error']);
+          }
+          else{
+            $('#res1').text("successfully upload");
+          }
+        });
+        e.preventDefault();
     });

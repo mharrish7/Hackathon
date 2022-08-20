@@ -27,16 +27,21 @@
 
     <div class="post1 sd" style="overflow-y:auto; height:15rem;">
         <h1 id="t1">Timetable</h1>
-        <!-- <button class="add">ADD</button> -->
-        <!-- {% for i in posts %}
-        <div class="passeg {{i[0]}}-{{i[1]}}">
+        <form id = "form">
+            <label for="file" class="form-label">Upload your timetable</label>
+            <br>
+            <input type="file" class = "form-control" name="file" id="file">
+            <input type="submit" value="Submit pdf" class="sumi">
+            <p id="res1"></p>
+        </form>
+        
+        {% for i in tt %}
+        <div class="timeseg">
             <hr>
-            <h2> {{i[0]}}</h2>
-            <p> Username : {{i[1]}}</p>
-            <button class="showp {{i[0]}}-{{i[1]}}">Show pass</button>
-            <button class="delp {{i[0]}}-{{i[1]}}">Delete</button>
+            <h2> {{i[0] }}- {{i[1]}}</h2>
+            
         </div>
-        {% endfor %} -->
+        {% endfor %}
     </div>
     <div class="search sd">
         <form action="" class="searchi" method="post">
