@@ -12,6 +12,7 @@ cursor = con.cursor()
 cursor.execute('create table if not exists Users(username varchar, password varchar, nickname varchar, email varchar)')
 cursor.execute('create table if not exists Todo(realuser varchar,todo varchar)')
 cursor.execute('create table if not exists Layout(username varchar, name varchar,style varchar,font varchar, bg varchar)')
+cursor.execute('create table if not exists PreLayout(username varchar,style varchar,font varchar, bg varchar)')
 con.commit()
 con.close()
 
@@ -244,9 +245,38 @@ def dash():
 
 @app.route('/logout', methods = ['POST'])
 def logout():
+    d = session['cuser']
     session['cuser'] = None 
+    f = request.form['ft']
+    s = request.form['st']
+    bg = request.form['bg']
+    print(f,s,bg)
+    con = sqlite3.connect('users.db')
+    cursor = con.cursor()
+    cursor.execute('create table if not exists PreLayout(username varchar,style varchar,font varchar, bg varchar)')
+    cursor.execute('insert into PreLayout values (?,?,?,?)',(d,s,f,bg))
+    con.commit()
+    con.close()
 
     return jsonify({'info' : 1})
+
+@app.route('/getpre', methods = ['POST'])
+def getpre():
+    d = session['cuser']
+    con = sqlite3.connect('users.db')
+    cursor = con.cursor()
+    cursor.execute('create table if not exists PreLayout(username varchar,style varchar,font varchar, bg varchar)')
+    cursor.execute('select * from PreLayout where username = "%s"' %d)
+    U = None 
+    for i in cursor:
+        U = i 
+    if U:
+        return jsonify({'data' : [i[1],i[2],i[3]]})
+    else:
+        return jsonify({'data' : 0})
+
+    
+
 
 # @app.route('/givepass', methods = ['POST'])
 # def givepass():

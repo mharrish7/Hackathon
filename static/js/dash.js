@@ -1,8 +1,12 @@
 $('.logout').on('click', function (ev) {
+
     $.ajax({
         url: '/logout',
         data: {
-            s: 1
+            s: 1,
+            ft : fl,
+            bg : bg,
+            st : sl
         },
         type: 'POST'
     }).done(function (data) {
@@ -16,9 +20,39 @@ $('.logout').on('click', function (ev) {
     ev.preventDefault();
 })
 
-function checkclass(){
-
-}
+$( document ).ready(function() {
+    $.ajax({
+        url: '/getpre',
+        data: {
+            s: 1,
+        },
+        type: 'POST'
+    }).done(function (data) {
+        t = data['data'];
+        if(t==0){
+            console.log('s');
+        }
+        else{
+            i = data['data'];
+            fl = t[1];
+            sl = t[0];
+            bg = t[2];
+            
+            if(bg != ""){
+                document.querySelector('body').setAttribute("style", "background-image: url('"+ bg + "');");
+            }
+            if(fl != ""){
+                document.querySelector('body').style.color = fl;
+            }
+            
+            if(sl != ""){
+                for( i of document.querySelectorAll('.sd9x7') ){
+                    i.style.backgroundColor = sl;
+                }
+            }
+        }
+    });
+});
 
 // $('.showp').on('click', function () {
 //     document.querySelector('.pass21').style.display = 'block';
@@ -404,7 +438,7 @@ var bg = "";
             })
         }
     }, {
-        greetings: 'Type list to get all the commands'
+        greetings: 'Type list to get all the commands,Remember to logout to save your layout'
     });
 
     $('.searchi').on('submit',function(e){
