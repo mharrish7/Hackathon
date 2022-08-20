@@ -16,10 +16,6 @@ $('.logout').on('click', function (ev) {
     ev.preventDefault();
 })
 
-$('.add').on('click', function () {
-    document.querySelector('.shows').style.display = 'block';
-})
-
 // $('.showp').on('click', function () {
 //     document.querySelector('.pass21').style.display = 'block';
 // })
@@ -201,12 +197,16 @@ $(document).keypress(function(e){
             document.querySelector('.post2').style.width = '1%';
             totoogle = 0;
             document.querySelector('#t2').style.display = 'none';
+            document.querySelector('.t3').style.display = 'none';
+
   
         }
         else{
             document.querySelector('.post2').style.width = '30%';
             totoogle = 1;
             document.querySelector('#t2').style.display = 'block';
+            document.querySelector('.t3').style.display = 'block';
+
   
         }
     }
@@ -224,6 +224,40 @@ $(document).keypress(function(e){
         console.log('leave');
 
     })
+
+    $('.post1').on('mouseenter', function(){
+        teri = 0;
+        console.log('enter');
+    })
+
+    $('.post1').on('mouseleave',function(){
+        teri = 1;
+        console.log('leave');
+
+    })
+
+    $('.post2').on('mouseenter', function(){
+        teri = 0;
+        console.log('enter');
+    })
+
+    $('.post2').on('mouseleave',function(){
+        teri = 1;
+        console.log('leave');
+
+    })
+
+    $('.search').on('mouseenter', function(){
+        teri = 0;
+        console.log('enter');
+    })
+
+    $('.search').on('mouseleave',function(){
+        teri = 1;
+        console.log('leave');
+
+    })
+
 
     $('.ter').terminal({
         hello: function (what) {
@@ -259,3 +293,28 @@ $(document).keypress(function(e){
             "https://www.google.com/search?q=" + s, "_blank");
         }
     )
+
+    $('.addtodo').on('submit', function (ev) {
+        console.log('ss');
+        var todo = $('#todoa').val();
+        todo = todo.split(' ').join('_');
+        $.ajax({
+            url: '/addtodo',
+            data: {
+                t : todo
+            },
+            type: 'POST'
+        }).done(function (data) {
+            if (data['info'] == 1) {
+                todo2 = todo.split('_').join(' ');
+                $('.post2').append(' <div class="todolist '+ todo + '"><hr><p display = "inline">' + todo2 + '</p><button class="delpl '+ todo + '">Delete</button></div>')
+                document.querySelector('#search').value = "";
+                $('#todoa').val("");
+            }
+            else{
+                console.log('error on adding todo');
+            }
+    
+        })
+        ev.preventDefault();
+    });

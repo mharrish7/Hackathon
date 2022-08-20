@@ -8,7 +8,7 @@ import os
 con = sqlite3.connect('users.db')
 cursor = con.cursor()
 cursor.execute('create table if not exists Users(username varchar, password varchar, nickname varchar, email varchar)')
-cursor.execute('create table if not exists Cred(realuser varchar,website varchar, username varchar, password varchar)')
+cursor.execute('create table if not exists Todo(realuser varchar,todo varchar)')
 con.commit()
 con.close()
 
@@ -146,16 +146,14 @@ def dash():
 
             con = sqlite3.connect('users.db')
             cursor = con.cursor()
-            cursor.execute('create table if not exists Cred(realuser varchar,website varchar, username varchar, password varchar)')
-            
-            cursor.execute("select * from Cred where realuser = '%s'" %d)
+            cursor.execute('create table if not exists Todo(realuser varchar,todo varchar)')            
+            cursor.execute("select * from Todo where realuser = '%s'" %d)
             cred = []
             for i in cursor:
-                # t = i[1]
-                # t = t.split('_')
-                # t = ".".join(t)
-                # r = (t,t[2],t[3])
-                cred.append(i[1:])
+                t1 = i[1]
+                t1 = i[1].split('_')
+                t1 = " ".join(t1)
+                cred.append(list(i[1:]) + [t1])
 
             return render_template('dashboard.html',data = L, posts = cred)
         else:
@@ -255,21 +253,37 @@ def check2():
 
 @app.route('/delpass', methods = ['POST'])
 def delpass():
-    try:
+    # try:
         s = request.form['st']
-        t = s.split('-')
+        print(s)
+        d = session['cuser']
         con = sqlite3.connect('users.db')
         cursor = con.cursor()
-        cursor.execute('create table if not exists Cred(realuser varchar, website varchar, username varchar, password varchar)')
+        cursor.execute('create table if not exists Todo(realuser varchar,todo varchar)')            
 
-        cursor.execute('delete from Cred where website = ? and username = ?',(t[0],t[1]))
+        cursor.execute('delete from Todo where todo = ? and realuser = ?',(s,d))
         con.commit()
         con.close()
         return jsonify({'info' : 1})
     
-    except:
-        return jsonify({'info' : 'error'})
+    # except:
+    #     return jsonify({'info' : 'error'})
 
+
+@app.route('/addtodo',methods = ['POST'])
+def addtodo():
+    s = request.form['t']
+    print(s)
+    d = session['cuser']
+    con = sqlite3.connect('users.db')
+    cursor = con.cursor()
+    cursor.execute('create table if not exists Todo(realuser varchar,todo varchar)')            
+
+    cursor.execute("insert into Todo values (?, ?)", (d,s))
+    con.commit()
+    con.close()
+    return jsonify({'info' : 1})
+    
 
 if __name__ == "__main__":
     app.run(debug=True)

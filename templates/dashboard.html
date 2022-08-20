@@ -15,7 +15,6 @@
 
 <body>
 
-
     <div class="topbar">
         <h1 class="head">ToDO</h1>
         <div class="head2">
@@ -50,16 +49,18 @@
     </div>
     <div class="post2 sd" style="overflow-y:auto; height:15rem;">
         <h1 id="t2">Todos</h1>
-        <!-- <button class="add">ADD</button> -->
-        <!-- {% for i in posts %}
-        <div class="passeg {{i[0]}}-{{i[1]}}">
+        <form class="addtodo t3" method="post">
+            <input type="text" name="todoa" id="todoa">
+            <input type="submit" value="ADD">
+        </form>
+        
+        {% for i in posts %}
+        <div class="passeg {{i[0]}}">
             <hr>
-            <h2> {{i[0]}}</h2>
-            <p> Username : {{i[1]}}</p>
-            <button class="showp {{i[0]}}-{{i[1]}}">Show pass</button>
-            <button class="delp {{i[0]}}-{{i[1]}}">Delete</button>
+            <p> {{i[1]}}</p>
+            <button class="delpl {{i[0]}}">Delete</button>
         </div>
-        {% endfor %} -->
+        {% endfor %}
     </div>
 
 
