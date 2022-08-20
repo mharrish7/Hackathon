@@ -9,12 +9,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css" />
+    <script src="https://kit.fontawesome.com/59c7633974.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{url_for('static',filename = 'css/dash.css')}}">
     <title>Document</title>
 </head>
 
 <body>
 
+    <div class="shows">
+        <button class="closeshow">BACK</button>
+        <div class="shows2">
+            <a href="https://www.facebook.com/" target="_blank"><i class="fa-brands fa-facebook fa-5x"></i></a>
+            <a href="https://twitter.com/i/flow/login" target="_blank"><i class="fa-brands fa-twitter fa-5x"></i></a>
+            <a href="https://www.reddit.com/" target="_blank"><i class="fa-brands fa-reddit fa-5x"></i></a>
+            <a href="https://www.instagram.com/" target="_blank"><i class="fa-brands fa-instagram fa-5x"></i></a>
+        </div>
+    </div>
 
     <div class="topbar">
         <h1 class="head">ToDO</h1>
@@ -26,20 +36,25 @@
 
     </div>
 
-    <div class="post1 sd" style="overflow-y:auto; height:15rem;">
+    <div class="post1 sd9x7" style="overflow-y:auto; height:15rem;">
         <h1 id="t1">Timetable</h1>
-        <!-- <button class="add">ADD</button> -->
-        <!-- {% for i in posts %}
-        <div class="passeg {{i[0]}}-{{i[1]}}">
+        <form id = "form" class = "t4">
+            <label for="file" class="form-label">Upload your timetable</label>
+            <br>
+            <input type="file" class = "form-control" name="file" id="file">
+            <input type="submit" value="Submit pdf" class="sumi">
+            <p id="res1"></p>
+        </form>
+        
+        {% for i in tt %}
+        <div class="timeseg">
             <hr>
-            <h2> {{i[0]}}</h2>
-            <p> Username : {{i[1]}}</p>
-            <button class="showp {{i[0]}}-{{i[1]}}">Show pass</button>
-            <button class="delp {{i[0]}}-{{i[1]}}">Delete</button>
+            <h2> {{i[0] }}- {{i[1]}}</h2>
+            
         </div>
-        {% endfor %} -->
+        {% endfor %}
     </div>
-    <div class="search sd">
+    <div class="search sd9x7">
         <form action="" class="searchi" method="post">
 
             <label for="search">Search</label>
@@ -48,18 +63,20 @@
 
         </form>
     </div>
-    <div class="post2 sd" style="overflow-y:auto; height:15rem;">
+    <div class="post2 sd9x7" style="overflow-y:auto; height:15rem;">
         <h1 id="t2">Todos</h1>
-        <!-- <button class="add">ADD</button> -->
-        <!-- {% for i in posts %}
-        <div class="passeg {{i[0]}}-{{i[1]}}">
+        <form class="addtodo t3" method="post">
+            <input type="text" name="todoa" id="todoa">
+            <input type="submit" value="ADD">
+        </form>
+        
+        {% for i in posts %}
+        <div class="passeg {{i[0]}}">
             <hr>
-            <h2> {{i[0]}}</h2>
-            <p> Username : {{i[1]}}</p>
-            <button class="showp {{i[0]}}-{{i[1]}}">Show pass</button>
-            <button class="delp {{i[0]}}-{{i[1]}}">Delete</button>
+            <p> {{i[1]}}</p>
+            <button class="delpl {{i[0]}}">Delete</button>
         </div>
-        {% endfor %} -->
+        {% endfor %}
     </div>
 
 
